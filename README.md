@@ -1,7 +1,7 @@
 # 🖥️ Vue.js Playground
 
 <h1 align="center">
-  <img src=".github/logo.png" width="200px" />
+  <img src=".github/logo.jpeg" width="200px" />
 </h1>
 
 ## 🔎️ Description
