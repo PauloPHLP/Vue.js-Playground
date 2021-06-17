@@ -7,10 +7,12 @@
 
   <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
 
+  <link rel="stylesheet" href="styles.css">
+
   <title>Vue.js First App</title>
 </head>
 <body>
-  <div id="app">
+  <div id="app" v-cloak>
     <h1>{{ getFullName(firstName, lastName).name }}</h1>
     <a v-bind:href="blogURL">Visit my blog</a>
 
@@ -25,16 +27,147 @@
     <div v-on:click.once="showDialog">Click here again!</div>
 
     <a href="https://www.google.com/" v-on:click.prevent target="_blank">Or here...</a>
+
+    <input type="text" v-on:keyup.enter.space="pressedSomething">
+
+    <input type="text" v-on:keyup.shift.enter="myListener">
+    <button v-on:click="myButtonListener">Click here, dude!</button>
+
+    <br/>
+
+    <input type="text" v-model.number.lazy="property">
+    <p>You entered: {{ property }}</p>
+
+    <!-- <div v-html="html"><div/> -->
+
+    <h1 v-once>{{ movieTitle }}</h1>
+    <button v-on:click="movieTitle = 'The Matrix Reloaded'">Change Movie Title</button>
+
+    <p v-if="itemsOnStock > 10">{{ itemsOnStock }} in stock.</p>
+    <p v-else-if="itemsOnStock > 0">A few items left!</p>
+    <p v-else>Empty stock =(</p>
+
+    <template v-if="itemsOnStock > 50">
+      <p>Special offer!</p>
+      <p>Save 20% ordering now!</p>
+    </template>
+
+    <p v-show="isNinja">Invisible like a ninja.</p>
+    <p v-show="!isNinja">Here I am.</p>
+
+    <button v-on:click="isNinja = !isNinja">Toggle ninja skills</button>
+
+    <h1>v-cloak example</h1>
+    <p >{{ message }}</p>
+
+    <h1>Movies</h1>
+    <ul>
+      <li v-for="title in movieTitles">
+        {{ title }}
+      </li>
+    </ul>
+
+    <table border="1">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Title</th>
+          <th>Company</th>
+          <th>Index</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(employee, index) in employees">
+          <td>{{ employee.name }}</td>
+          <td>{{ employee.title }}</td>
+          <td>{{ companyName }}</td>
+          <td>{{ index + 1 }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <ul>
+      <li v-for="(value, key, index) in person">{{ key }}: {{ value }} - {{ index + 1}}</li>
+    </ul>
+
+    <ul>
+      <li v-for="(value, index) in 10">{{ value }} * {{ index }} = {{ value * index }}</li>
+    </ul>
+
+    <p>{{ counter }}</p>
+    <p>{{ fullNameComputed }}</p>
+
+    <button @click="counter++">Increase counter</button>
+    <button @click="changeName">Change name</button>
+    <button @click="changeNameSetter">Change name (setter)</button>
+
+    <br />
+    <br />
+
+    <input type="text" v-model="searchQuery" />
+
+    <p v-if="isSearching">Searching...</p>
+    <div v-else>
+      <ol>
+        <li v-for="result in results">{{ result }}</li>
+      </ol>
+    </div>
+
+    <div>{{ message | uppercase(true) }}</div>
+
+    <div :style="[styles, moreStyles]"></div>
+
+    <div 
+      class="shape" 
+      v-bind:class="[ shape.shape, shape.direction ? shape.direction : '', {
+        animate: shape.animate
+      } ]"
+      v-for="shape in shapes">
+    </div>
   </div>
 
   <script src="vue.js"></script>
   <script type="text/javascript">
-    var app = new Vue({
+    new Vue({
       el: "#app",
       data: {
         firstName: 'Paulo',
         lastName: 'Lima',
-        blogURL: 'https://www.google.com/'
+        blogURL: 'https://www.google.com/',
+        property: 33,
+        html: '<h1>Hello World!</h1>',
+        movieTitle: 'The Matrix',
+        itemsOnStock: 50,
+        isNinja: true,
+        message: "hey, hey!",
+        movieTitles: ["The Matrix", "The Matrix: Reloaded", "The Matrix Revolutions"],
+        employees: [
+          { name: 'Abby', title: 'Accountant'},
+          { name: 'Andy', title: 'Marketing Manager'},
+          { name: 'Brandon', title: 'Vue.js expert'}
+        ],
+        companyName: 'VueX LTD',
+        person: {
+          firstName: 'Bo',
+          lastName: 'Jack',
+          age: 42
+        },
+        counter: 0,
+        searchQuery: '',
+        results: [],
+        isSearching: false,
+        color: 'blue',
+        moreStyles: {
+          'border-radius': '8px',
+        },
+        shapes: [
+          { shape: 'circle', animate: true },
+          { shape: 'square', animate: true },
+          { shape: 'triangle', direction: 'up', animate: true },
+          { shape: 'triangle', direction: 'down', animate: true },
+          { shape: 'triangle', direction: 'left', animate: true },
+          { shape: 'triangle', direction: 'right', animate: true },
+        ]
       },
       methods: {
         getFullName: function (first, last) {
@@ -44,12 +177,84 @@
         },
 
         clickButton: function(message, event) {
-          console.log(event);
           alert(message);
         },
 
         showDialog: function() {
           alert('Hello, World!');
+        },
+
+        pressedSomething: function() {
+          alert("You pressed the enter or space key!");
+        },
+
+        myListener: function() {
+          alert("You pressed a modifier key!");
+        },
+
+        myButtonListener: function() {
+          alert("You clicked the button");
+        },
+
+        changeName: function() {
+          this.firstName = "Bo",
+          this.lastName = "Jack"
+        },
+
+        changeNameSetter: function() {
+          this.fullNameComputed = 'Pauleta Mexicana';
+        },
+      },
+      computed: {
+        fullNameComputed: {
+          get: function() {
+            // alert('Getting full name...');
+
+            return {
+              name: this.firstName + ' ' + this.lastName
+            }
+          },
+
+          set: function(newValue) {
+            // alert('Setting new name: ' + newValue);
+
+            const parts = newValue.split(' ');
+            this.firstName = parts[0];
+            this.lastName = parts[parts.length - 1];
+          }
+        },
+
+        styles: function() {
+          var height = 200;
+
+          return {
+            'background-color': 'blue',
+            'height': (height / 2) + 'px',
+            'width': '200px',
+          }
+        }
+      },
+      watch: {
+        searchQuery: function(query) {
+          this.isSearching = true;
+          var vm = this;
+
+          setTimeout(() => {
+            vm.results = ['JavaScript', 'React.js', 'Vue.js'];
+
+            vm.isSearching = false;
+          }, 500);
+        }
+      },
+      filters: {
+        uppercase: function(value, onlyFirst) {
+          if (!value) return '';
+
+          value = value.toString();
+
+          if (onlyFirst) return value.charAt(0).toUpperCase() + value.slice(1);
+
+          return value.toUpperCase();
         }
       }
     });
