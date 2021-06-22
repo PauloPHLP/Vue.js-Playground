@@ -5,7 +5,11 @@
 </h1>
 
 ## 🔎️ Description
+
 A basic Vue.js 2 application to test basic Vue.js concepts.
+
+This project was made during the <a href="udemy.com/course/vuejs-from-beginner-to-professional/">Vue JS 2: From Beginner to Professional</a> course on Udemy.
+
 
 ## 🚀️ Technologies
 
